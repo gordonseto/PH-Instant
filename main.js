@@ -12,7 +12,7 @@ const phBase = 'http://www.pornhub.com/webmasters/';
 
 function sendSearchAPIRequest(searchBoxText){
 	console.log(searchBoxText);
-	const baseUrl = phBase + 'search?id=44bc40f3bc04f65b7a35&ordering=mostviewed&search=';
+	const baseUrl = phBase + 'search?id=44bc40f3bc04f65b7a35&ordering=featured&search=';
 	const url = baseUrl + searchBoxText;
 
 	$.ajax({
@@ -21,21 +21,27 @@ function sendSearchAPIRequest(searchBoxText){
 		dataType: 'json',
 		crossDomain: true,
 		success: function(data){
-			console.log(data);
-			console.log(data.videos[0].video_id);
-			console.log(data.videos[0].title);
-			if (data.videos.length != 0) {
-				const videoId = data.videos[0].video_id;
-				$("#videoContainer").html(generateIframeHTMLFor(videoId));
-			}	
+			displayVideo(data)
 		}
 	});
 }
 
+function displayVideo(data){
+	console.log(data);
+	if (data.videos.length != 0) {
+		console.log(data.videos[0].video_id);
+		console.log(data.videos[0].title);
+
+		const videoId = data.videos[0].video_id;
+		$("#videoContainer").html(generateIframeHTMLFor(videoId));
+		$('h1').text(data.videos[0].title);
+	}	
+}
+
 function generateIframeHTMLFor(id){
 	var html = "<iframe src=\"http://www.pornhub.com/embed/" + id 
-				+ "\" frameborder=\"0\" width=\"608\" height=\"468\""
-				+ " scrolling=\"no\" autoplay=\"1\"> </iframe>";
+				+ "\" id=\"iframe\" frameborder=\"0\" width=\"608\" height=\"468\""
+				+ " scrolling=\"no\"> </iframe>";
 	console.log(html);
 	return html
 }
